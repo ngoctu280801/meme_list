@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import * as React from "react";
+import { Button } from "./components/Button";
+import { fetchMemes, url } from "./constants";
+import { Grid, ImageList, ImageListItem } from "@mui/material";
+import { useQuery } from "react-query";
+import { styled } from "@mui/material/styles";
+import MuiButton from "@mui/material/Button";
+import Meme from "./components/memes/Meme";
+import MemeList from "./components/memes/MemeList";
 
 function App() {
+  const [memes, setMemes] = React.useState([]);
+
+  const { data, refetch, isFetching } = useQuery(url, fetchMemes, {
+    // enabled: enabled, // disable this query from automatically running
+    manual: true,
+  });
+  React.useEffect(() => {
+    if (data?.memes) {
+      setMemes(data.memes);
+    }
+  }, [data?.memes]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Button variant="contained" onClick={refetch}>
+        Load memes
+      </Button>
+      {isFetching ? <p>...Loading</p> : <MemeList memes={memes}></MemeList>}
     </div>
   );
 }
