@@ -11,7 +11,7 @@ import MemeList from "./components/memes/MemeList";
 function App() {
   const [memes, setMemes] = React.useState([]);
 
-  const { data, refetch, isFetching } = useQuery(url, fetchMemes, {
+  const { data, refetch, isLoading, isFetching } = useQuery(url, fetchMemes, {
     // enabled: enabled, // disable this query from automatically running
     manual: true,
   });
@@ -26,7 +26,11 @@ function App() {
       <Button variant="contained" onClick={refetch}>
         Load memes
       </Button>
-      {isFetching ? <p>...Loading</p> : <MemeList memes={memes}></MemeList>}
+      {isFetching || isLoading ? (
+        <p>...Loading</p>
+      ) : (
+        <MemeList memes={memes}></MemeList>
+      )}
     </div>
   );
 }
